@@ -1,21 +1,52 @@
 /* eslint-disable no-console */
 import { mount } from '@vue/test-utils'
-import LogInCard from './LogInCard.vue'
+import { useSessionToken } from 'composables/useSessionToken'
 import { FullRequestParams } from 'lib/api/http-client'
 import { getByTestId, getHTMLElement } from 'testUtils'
+import LogInCard from './LogInCard.vue'
 
 const token = 'jwt-token'
 type fetchMockCall = [string, FullRequestParams]
 
 afterEach(() => {
-  fetchMock.resetMocks()
+  // fetchMock.resetMocks()
   vi.restoreAllMocks()
 })
 
 describe('<LogInCard />', () => {
-  beforeEach(() => {
-    fetchMock.mockResponseOnce(JSON.stringify({ token }))
-  })
+  const username = 'strongbad'
+  const emailAddress = `${username}@homestarrunner.com`
+  const password = 'homestarsux'
+
+  // beforeEach(() => {
+  //   // fetchMock.mockResponseOnce(JSON.stringify({ token }))
+  //   fetchMock.mockResponse((req) => {
+  //     if (req.url.endsWith('/api/Users/login')) {
+  //       console.debug(req)
+  //       return JSON.stringify({
+  //         body: {
+  //           token,
+  //         },
+  //         status: 201,
+  //       })
+  //     } else if (req.url.endsWith('/api/Users/me')) {
+  //       console.debug(req)
+  //       return JSON.stringify({
+  //         data: {
+  //           admin: false,
+  //           email: emailAddress,
+  //           username,
+  //         },
+  //         status: 200,
+  //       })
+  //       // return Promise.resolve()
+  //     }
+
+  //     return JSON.stringify({
+  //       status: 500,
+  //     })
+  //   })
+  // })
 
   it('should render without crashing', () => {
     const wrapper = mount(LogInCard)
@@ -61,8 +92,45 @@ describe('<LogInCard />', () => {
   })
 
   describe('when the login button is clicked', () => {
-    const emailAddress = 'strongbad@homestarrunner.com'
-    const password = 'homestarsux'
+    // const username = 'strongbad'
+    // const emailAddress = `${username}@homestarrunner.com`
+    // const password = 'homestarsux'
+
+    // beforeAll(() => {
+    //   fetchMock.resetMocks()
+    //   // /^https?:\/\/test\.leaderboards\.gg.+$/
+    //   fetchMock.mockResponse((req) => {
+    //     if (req.url.endsWith('/api/Users/login')) {
+    //       console.debug(req)
+    //       return JSON.stringify({
+    //         body: {
+    //           token,
+    //         },
+    //         status: 201,
+    //       })
+    //     } else if (req.url.endsWith('/api/Users/me')) {
+    //       console.debug(req)
+    //       return JSON.stringify({
+    //         data: {
+    //           admin: false,
+    //           email: emailAddress,
+    //           username,
+    //         },
+    //         status: 200,
+    //       })
+    //       // return Promise.resolve()
+    //     }
+
+    //     return JSON.stringify({
+    //       status: 500,
+    //     })
+    //   })
+    // })
+
+    // beforeEach(() => {
+    //   fetchMock.resetMocks()
+
+    // })
 
     it('emits the close event', async () => {
       const wrapper = mount(LogInCard)
@@ -96,8 +164,19 @@ describe('<LogInCard />', () => {
     })
 
     // this test is still failing
-    it.skip('calls the api', async () => {
+    it.only('calls the api', async () => {
+      // fetchMock.mockResponses(
+      //   JSON.stringify({ token: 'jwt-token' }),
+      //   // JSON.stringify({ admin: false, email: 'email', username: 'uname' }),
+      //   'test',
+      // )
+
+      // fetchMock.mockResponseOnce(JSON.stringify({ token: 'jwt-token' }))
+
       const wrapper = mount(LogInCard)
+
+      const authToken = useSessionToken()
+      authToken.value = token
 
       const emailInput = getByTestId(wrapper, 'email-input')
       const passwordInput = getByTestId(wrapper, 'password-input')
@@ -108,7 +187,8 @@ describe('<LogInCard />', () => {
       await getByTestId(wrapper, 'login-button').trigger('click')
 
       const apiCalls = fetchMock.mock.calls as fetchMockCall[]
-      // console.log(apiCalls)
+      console.log('\n\nAPI CALLS:')
+      console.log(apiCalls)
       expect(apiCalls?.[0]?.length).toBe(2)
 
       const loginApiCall = apiCalls[0]

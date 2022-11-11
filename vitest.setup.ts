@@ -9,12 +9,30 @@ const fetchMock = createFetchMock(vi)
 // sets globalThis.fetch and globalThis.fetchMock to our mocked version
 fetchMock.enableMocks()
 
-// enableAutoUnmount(afterEach)
+// fetchMock.mockResponse((req) => {
+//   if (req.url.endsWith('/api/Users/login')) {
+//     console.debug(req)
+//     return JSON.stringify({
+//       token: 'jwt-token',
+//     })
+//   } else if (req.url.endsWith('/api/Users/me')) {
+//     console.debug(req)
+//     return JSON.stringify({
+//       admin: false,
+//       email: 'email',
+//       username: 'uname',
+//     })
+//     // return Promise.resolve()
+//   }
 
-// export * from './node_modules/nuxt/dist/app/composables'
-// export { useState } from './node_modules/nuxt/dist/app/composables/state'
-// export { useState } from '.nuxt/imports'
-// export { useState } from 'nuxt/app'
+//   return JSON.stringify({
+//     status: 500,
+//   })
+// })
+
+vi.stubGlobal('fetch', fetchMock)
+
+// enableAutoUnmount(afterEach)
 
 // Stolen from here:
 // https://zenn.dev/ninebolt6/articles/cadc924cb2416d

@@ -1,8 +1,8 @@
 import { mount } from '@vue/test-utils'
+import SiteNavbar from './SiteNavbar.vue'
 import * as apiComposables from 'composables/api'
 import { useCurrentUser } from 'composables/useCurrentUser'
 import { getByTestId } from 'testUtils'
-import SiteNavbar from './SiteNavbar.vue'
 
 afterEach(() => {
   vi.restoreAllMocks()

@@ -1,9 +1,10 @@
+/* eslint-disable no-console */
 import { ref } from 'vue'
 import { useCurrentUser } from 'composables/useCurrentUser'
 import { useSessionToken } from 'composables/useSessionToken'
-import type { LoginRequest, ProblemDetails } from 'lib/api/data-contracts'
 import { Users } from 'lib/api/Users'
 import { isProblemDetails } from 'lib/helpers'
+import type { LoginRequest, ProblemDetails } from 'lib/api/data-contracts'
 
 interface LoginUserResponse {
   loading: boolean
@@ -25,8 +26,10 @@ export const useLoginUser = async (
   try {
     const authResponse = await userClient.usersLoginCreate(requestData)
 
-    /* eslint-disable no-console */
-    console.table(authResponse)
+    console.log('\n\nLOGIN REQUEST DATA:')
+    console.log(requestData)
+    console.log('\n\nLOGIN RESPONSE DATA:')
+    console.log(authResponse)
 
     if (authResponse.ok) {
       authToken.value = authResponse.data.token
@@ -35,7 +38,10 @@ export const useLoginUser = async (
         headers: { Authorization: `Bearer ${authToken.value}` },
       })
 
-      console.table(userResponse)
+      console.log('\n\nAUTH REQUEST DATA:')
+      console.log(`Bearer ${authToken.value}`)
+      console.log('\n\nAUTH RESPONSE DATA:')
+      console.log(userResponse)
 
       if (userResponse.ok) {
         currentUser.value = userResponse.data
