@@ -1,13 +1,14 @@
+import 'whatwg-fetch'
 import { config } from '@vue/test-utils'
-import createFetchMock from 'vitest-fetch-mock'
+// import createFetchMock from 'vitest-fetch-mock'
 import { vi } from 'vitest'
 import type { Ref } from 'vue'
 import { reactive, isRef, toRef } from 'vue'
 
-const fetchMock = createFetchMock(vi)
+// const fetchMock = createFetchMock(vi)
 
 // sets globalThis.fetch and globalThis.fetchMock to our mocked version
-fetchMock.enableMocks()
+// fetchMock.enableMocks()
 
 // enableAutoUnmount(afterEach)
 

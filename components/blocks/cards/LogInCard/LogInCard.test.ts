@@ -1,21 +1,48 @@
 /* eslint-disable no-console */
 import { mount } from '@vue/test-utils'
-import LogInCard from './LogInCard.vue'
+import { rest } from 'msw'
+import { setupServer } from 'msw/node'
+import { vi } from 'vitest'
 import { FullRequestParams } from 'lib/api/http-client'
 import { getByTestId, getHTMLElement } from 'testUtils'
+import LogInCard from './LogInCard.vue'
 
 const token = 'jwt-token'
 type fetchMockCall = [string, FullRequestParams]
 
+const root = 'http://test.leaderboards.gg'
+
+const handlers = [
+  rest.post(`${root}/api/Users/login`, (_req, res, ctx) => {
+    return res(ctx.status(200), ctx.json({ token }))
+  }),
+
+  rest.get(`${root}/api/Users/me`, (_req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json({
+        admin: false,
+        email: 'email',
+        username: 'username',
+      }),
+    )
+  }),
+]
+
+const server = setupServer(...handlers)
+
+beforeAll(() => server.listen())
+afterAll(server.close)
 afterEach(() => {
-  fetchMock.resetMocks()
+  // fetchMock.resetMocks()
+  server.resetHandlers()
   vi.restoreAllMocks()
 })
 
 describe('<LogInCard />', () => {
-  beforeEach(() => {
-    fetchMock.mockResponseOnce(JSON.stringify({ token }))
-  })
+  // beforeEach(() => {
+  //   fetchMock.mockResponseOnce(JSON.stringify({ token }))
+  // })
 
   it('should render without crashing', () => {
     const wrapper = mount(LogInCard)
@@ -96,7 +123,8 @@ describe('<LogInCard />', () => {
     })
 
     // this test is still failing
-    it.skip('calls the api', async () => {
+    it.only('calls the api', async () => {
+      const fetchSpy = vi.spyOn(window, 'fetch')
       const wrapper = mount(LogInCard)
 
       const emailInput = getByTestId(wrapper, 'email-input')
@@ -107,8 +135,8 @@ describe('<LogInCard />', () => {
 
       await getByTestId(wrapper, 'login-button').trigger('click')
 
-      const apiCalls = fetchMock.mock.calls as fetchMockCall[]
-      // console.log(apiCalls)
+      const apiCalls = fetchSpy.mock.calls as fetchMockCall[]
+      console.log(apiCalls)
       expect(apiCalls?.[0]?.length).toBe(2)
 
       const loginApiCall = apiCalls[0]
