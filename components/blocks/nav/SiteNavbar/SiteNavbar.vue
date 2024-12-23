@@ -87,19 +87,16 @@ function logout() {
           v-if="!loggedIn"
           data-testid="site-navbar-login-button"
           @click="toggleLoginModal"
-          @keyup.enter="toggleLoginModal"
         />
         <SignUpButton
           v-if="!loggedIn"
           data-testid="site-navbar-sign-up-button"
           @click="toggleSignUpModal"
-          @keyup.enter="toggleSignUpModal"
         />
         <LogoutButton
           v-if="loggedIn"
           data-testid="site-navbar-logout-button"
           @click="logout"
-          @keyup.enter="logout"
         />
         <button class="mobile-menu__toggle" @click="toggleMenu">
           <i-svg-menu class="mx-2 size-5 fill-current" />
