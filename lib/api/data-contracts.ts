@@ -163,8 +163,6 @@ export interface LeaderboardViewModel {
    * @example "1984-01-01T00:00:00Z"
    */
   deletedAt: string | null
-  /** A collection of `Category` entities for the `Leaderboard`. */
-  categories: CategoryViewModel[]
 }
 
 /** This request object is sent when a `User` is attempting to log in. */
